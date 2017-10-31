@@ -23,7 +23,7 @@ else
 fi
 
 
-BMK_CONFIG_FILE="${SRC_DIR}/config/bt.txt"
+BMK_CONFIG_FILE="${SRC_DIR}/config/suite_bt.txt"
 BMK_CLASS="S"
 
 
