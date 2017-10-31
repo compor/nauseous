@@ -1,6 +1,6 @@
 # cmake file
 
-set(BMK_NAME "BT")
+set(BMK_NAME "UA")
 string(TOLOWER ${BMK_NAME} BMK_NAME_LOWER)
 set(BMK_PROJECT_NAME ${BMK_NAME_LOWER})
 
@@ -11,23 +11,18 @@ if(NOT ${hasSrcDir})
   return()
 endif()
 
-set(VEC "")
-
 set(SOURCES
-  add.c
-  adi.c
-  bt.c
-  error.c
-  exact_rhs.c                                    
-  exact_solution.c                               
-  initialize.c                                   
-  rhs.c                                          
-  set_constants.c                                
-  solve_subs.c                                   
-  verify.c                                       
-  x_solve${VEC}.c                                      
-  y_solve${VEC}.c                                      
-  z_solve${VEC}.c)
+  adapt.c
+  convect.c
+  diffuse.c
+  mason.c
+  move.c
+  precond.c
+  setup.c
+  transfer.c
+  ua.c
+  utils.c
+  verify.c)
 
 add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
 

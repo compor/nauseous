@@ -1,6 +1,6 @@
 # cmake file
 
-set(BMK_NAME "BT")
+set(BMK_NAME "MG")
 string(TOLOWER ${BMK_NAME} BMK_NAME_LOWER)
 set(BMK_PROJECT_NAME ${BMK_NAME_LOWER})
 
@@ -14,20 +14,7 @@ endif()
 set(VEC "")
 
 set(SOURCES
-  add.c
-  adi.c
-  bt.c
-  error.c
-  exact_rhs.c                                    
-  exact_solution.c                               
-  initialize.c                                   
-  rhs.c                                          
-  set_constants.c                                
-  solve_subs.c                                   
-  verify.c                                       
-  x_solve${VEC}.c                                      
-  y_solve${VEC}.c                                      
-  z_solve${VEC}.c)
+  mg.c)
 
 add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
 
