@@ -96,12 +96,12 @@ list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}")
 
 
 if(LLVM_IR_UTIL_FOUND)
-  file(STRINGS ${HARNESS_PIPELINE_CONFIG_FILE} PIPELINES)
-
   if(NOT HARNESS_PIPELINE_CONFIG_FILE)
-    message(FATAL_ERROR "Benchmark config file HARNESS_PIPELINE_CONFIG_FILE is not set")
+    message(WARNING "Benchmark config file is not set")
   elseif(NOT EXISTS ${HARNESS_PIPELINE_CONFIG_FILE})
-    message(FATAL_ERROR "Benchmark config file does not exist: ${HARNESS_PIPELINE_CONFIG_FILE}")
+    message(WARNING "Benchmark config file does not exist: ${HARNESS_PIPELINE_CONFIG_FILE}")
+  else()
+    file(STRINGS ${HARNESS_PIPELINE_CONFIG_FILE} PIPELINES)
   endif()
 
   foreach(PLINE ${PIPELINES})
