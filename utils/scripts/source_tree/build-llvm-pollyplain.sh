@@ -1,46 +1,18 @@
 #!/usr/bin/env bash
 
-# initialize configuration vars
-
-SRC_DIR=""
-INSTALL_PREFIX=""
-
-
-# set configuration vars
-
-if [ -z "$1" ]; then 
-  echo "error: source directory was not provided" 
-
-  exit 1
-fi
-
+[[ -z $1 ]] && echo "error: source directory was not provided" && exit 1
 SRC_DIR=$1
 
-if [ -z "$2" ]; then 
-  INSTALL_PREFIX="${SRC_DIR}/../install/"
-else
-  INSTALL_PREFIX="$2"
-fi
+INSTALL_PREFIX="$2"
+[[ -z $2 ]] && INSTALL_PREFIX="${SRC_DIR}/../install/"
 
+[[ -z ${LLVMPOLLY_ROOT} ]] && echo "error: LLVMPOLLY_ROOT is not set" && exit 2
 
 PIPELINE_CONFIG_FILE="${SRC_DIR}/config/pipelines/pollyplain.txt"
 BMK_CONFIG_FILE="${SRC_DIR}/config/suite_all.txt"
 BMK_CLASS="S"
 
-if [ -z ${LLVMPOLLY_ROOT+x} ]; then 
-  echo "error: LLVMPOLLY_ROOT is not set"
-
-  exit 2
-fi
-
-
-# print configuration vars
-
-echo "info: printing configuration vars"
-echo "info: source dir: ${SRC_DIR}"
-echo "info: install dir: ${INSTALL_PREFIX}"
-echo ""
-
+#
 
 C_FLAGS="-g -Wall -O3"
 LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
@@ -63,7 +35,6 @@ CC=clang CXX=clang++ \
   -DBMK_CLASS=${BMK_CLASS} \
   -DLLVMPOLLY_ROOT=${LLVMPOLLY_ROOT} \
   "${SRC_DIR}"
-
 
 exit $?
 

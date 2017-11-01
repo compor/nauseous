@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-# initialize configuration vars
-
-SRC_DIR=""
-INSTALL_PREFIX=""
-
-
-# set configuration vars
-
 [[ -z $1 ]] && echo "error: source directory was not provided" && exit 1
 SRC_DIR=$1
 
