@@ -10,9 +10,24 @@ macro(PollyWithIdPipelineSetup)
 
   message(STATUS "setting up pipeline ${PIPELINE_NAME}")
 
+  if(NOT DEFINED ENV{HARNESS_INPUT_DIR})
+    message(FATAL_ERROR
+      "${PIPELINE_NAME} env variable HARNESS_INPUT_DIR is not defined")
+  endif()
+
   if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
     message(FATAL_ERROR
       "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined")
+  endif()
+
+  if(NOT DEFINED ENV{POLLY_BLACKLIST_FILE})
+    message(FATAL_ERROR
+      "${PIPELINE_NAME} env variable POLLY_BLACKLIST_FILE is not defined")
+  endif()
+
+  file(TO_CMAKE_PATH $ENV{HARNESS_INPUT_DIR} HARNESS_INPUT_DIR)
+  if(NOT IS_DIRECTORY ${HARNESS_INPUT_DIR})
+    message(FATAL_ERROR "${PIPELINE_NAME} HARNESS_INPUT_DIR does not exist")
   endif()
 
   if(NOT IS_DIRECTORY $ENV{HARNESS_REPORT_DIR})
@@ -20,8 +35,11 @@ macro(PollyWithIdPipelineSetup)
   endif()
 
   message(STATUS
+    "${PIPELINE_NAME} uses env variable: HARNESS_INPUT_DIR=${HARNESS_INPUT_DIR}")
+  message(STATUS
     "${PIPELINE_NAME} uses env variable: HARNESS_REPORT_DIR=$ENV{HARNESS_REPORT_DIR}")
-
+  message(STATUS
+    "${PIPELINE_NAME} uses env variable: POLLY_BLACKLIST_FILE=$ENV{POLLY_BLACKLIST_FILE}")
   #
 
   find_package(LLVMPolly REQUIRED)
@@ -52,6 +70,14 @@ function(PollyWithIdPipeline trgt)
   file(TO_CMAKE_PATH "$ENV{HARNESS_REPORT_DIR}/${BMK_NAME}-${PIPELINE_NAME}.txt"
     REPORT_FILE)
 
+  file(TO_CMAKE_PATH
+    "${HARNESS_INPUT_DIR}/${BMK_NAME}/$ENV{POLLY_BLACKLIST_FILE}"
+    PIPELINE_INPUT_FILE)
+
+  if(EXISTS ${PIPELINE_INPUT_FILE})
+    set(PIPELINE_CMDLINE_ARG "-polly-func-blacklist=${PIPELINE_INPUT_FILE}")
+  endif()
+
   llvmir_attach_opt_pass_target(
     TARGET ${PIPELINE_PREFIX}_link
     DEPENDS ${DEPENDEE_TRGT}
@@ -61,7 +87,8 @@ function(PollyWithIdPipeline trgt)
     -polly-export-jscop
     -polly-codegen
     -polly-parallel
-    -polly-export-parallel-id-loops=${REPORT_FILE})
+    -polly-export-parallel-id-loops=${REPORT_FILE}
+    ${PIPELINE_CMDLINE_ARG})
   add_dependencies(${PIPELINE_PREFIX}_link ${DEPENDEE_TRGT})
 
   # do not produce binary because we need to link against a parallel lib
