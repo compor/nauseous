@@ -112,6 +112,7 @@ function(AnnotateLoopsPipeline trgt)
     -annotate-loops
     -al-loop-start-id=2
     -al-loop-id-interval=4
+    -al-loop-lines
     -al-stats=${REPORT_FILE}
     ${PIPELINE_CMDLINE_ARG})
   add_dependencies(${PIPELINE_PREFIX}_opt2 ${PIPELINE_PREFIX}_link)
