@@ -72,18 +72,23 @@ function(AnnotateLoopsPipeline trgt)
   file(TO_CMAKE_PATH "${HARNESS_REPORT_DIR}/${BMK_NAME}-${PIPELINE_NAME}.txt"
     REPORT_FILE)
 
-  llvmir_attach_bc_target(${PIPELINE_PREFIX}_bc ${trgt})
+  llvmir_attach_bc_target(
+    TARGET ${PIPELINE_PREFIX}_bc
+    DEPENDS ${trgt})
   add_dependencies(${PIPELINE_PREFIX}_bc ${trgt})
 
-  llvmir_attach_opt_pass_target(${PIPELINE_PREFIX}_opt1
-    ${PIPELINE_PREFIX}_bc
+  llvmir_attach_opt_pass_target(
+    TARGET ${PIPELINE_PREFIX}_opt1
+    DEPENDS ${PIPELINE_PREFIX}_bc
     -mem2reg
     -mergereturn
     -simplifycfg
     -loop-simplify)
   add_dependencies(${PIPELINE_PREFIX}_opt1 ${PIPELINE_PREFIX}_bc)
 
-  llvmir_attach_link_target(${PIPELINE_PREFIX}_link ${PIPELINE_PREFIX}_opt1)
+  llvmir_attach_link_target(
+    TARGET ${PIPELINE_PREFIX}_link
+    DEPENDS ${PIPELINE_PREFIX}_opt1)
   add_dependencies(${PIPELINE_PREFIX}_link ${PIPELINE_PREFIX}_opt1)
 
   get_target_property(LINKER_LANG ${PIPELINE_PREFIX}_link LINKER_LANGUAGE)
@@ -100,8 +105,9 @@ function(AnnotateLoopsPipeline trgt)
     endif()
   endif()
 
-  llvmir_attach_opt_pass_target(${PIPELINE_PREFIX}_opt2
-    ${PIPELINE_PREFIX}_link
+  llvmir_attach_opt_pass_target(
+    TARGET ${PIPELINE_PREFIX}_opt2
+    DEPENDS ${PIPELINE_PREFIX}_link
     -load ${ANNOTATELOOPS_LIB_LOCATION}
     -annotate-loops
     -al-loop-start-id=2
@@ -110,7 +116,9 @@ function(AnnotateLoopsPipeline trgt)
     ${PIPELINE_CMDLINE_ARG})
   add_dependencies(${PIPELINE_PREFIX}_opt2 ${PIPELINE_PREFIX}_link)
 
-  llvmir_attach_executable(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_opt2)
+  llvmir_attach_executable(
+    TARGET ${PIPELINE_PREFIX}_bc_exe
+    DEPENDS ${PIPELINE_PREFIX}_opt2)
   add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_opt2)
 
   target_link_libraries(${PIPELINE_PREFIX}_bc_exe m)
