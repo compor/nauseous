@@ -21,14 +21,19 @@ function(BasicBitcodeGenPipeline trgt)
   set(PIPELINE_PREFIX ${PIPELINE_SUBTARGET})
 
   ## pipeline targets and chaining
-  llvmir_attach_bc_target(${PIPELINE_PREFIX}_bc ${trgt})
+  llvmir_attach_bc_target(
+    TARGET ${PIPELINE_PREFIX}_bc
+    DEPENDS ${trgt})
   add_dependencies(${PIPELINE_PREFIX}_bc ${trgt})
 
-  llvmir_attach_link_target(${PIPELINE_PREFIX}_link
-    ${PIPELINE_PREFIX}_bc)
+  llvmir_attach_link_target(
+    TARGET ${PIPELINE_PREFIX}_link
+    DEPENDS ${PIPELINE_PREFIX}_bc)
   add_dependencies(${PIPELINE_PREFIX}_link ${PIPELINE_PREFIX}_bc)
 
-  llvmir_attach_executable(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
+  llvmir_attach_executable(
+    TARGET ${PIPELINE_PREFIX}_bc_exe
+    DEPENDS ${PIPELINE_PREFIX}_link)
   add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
 
   target_link_libraries(${PIPELINE_PREFIX}_bc_exe m)

@@ -32,8 +32,9 @@ function(PollyPlainPipeline trgt)
 
   ## pipeline targets and chaining
 
-  llvmir_attach_opt_pass_target(${PIPELINE_PREFIX}_link
-    ${DEPENDEE_TRGT}
+  llvmir_attach_opt_pass_target(
+    TARGET ${PIPELINE_PREFIX}_link
+    DEPENDS ${DEPENDEE_TRGT}
     -load ${LLVMPOLLY_SHARED_LIBRARY}
     -polly-canonicalize
     -polly-scops
@@ -42,7 +43,9 @@ function(PollyPlainPipeline trgt)
     -polly-parallel)
   add_dependencies(${PIPELINE_PREFIX}_link ${DEPENDEE_TRGT})
 
-  llvmir_attach_executable(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
+  llvmir_attach_executable(
+    TARGET ${PIPELINE_PREFIX}_bc_exe
+    DEPENDS ${PIPELINE_PREFIX}_link)
   add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
 
   target_link_libraries(${PIPELINE_PREFIX}_bc_exe m)
