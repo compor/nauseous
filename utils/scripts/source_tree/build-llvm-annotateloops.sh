@@ -14,7 +14,7 @@ BMK_CLASS="S"
 
 #
 
-C_FLAGS="-g -Wall"
+C_FLAGS="-g -Wall -O0"
 LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi" 
 
