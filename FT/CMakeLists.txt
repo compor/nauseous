@@ -11,12 +11,17 @@ if(NOT ${hasSrcDir})
   return()
 endif()
 
-set(SOURCES
-  appft.c
-  auxfnct.c
-  fft3d.c
-  mainft.c
-  verify.c)
+if(BMK_TYPE STREQUAL "OMP")
+  set(SOURCES
+    ft.c)
+else()
+  set(SOURCES
+    appft.c
+    auxfnct.c
+    fft3d.c
+    mainft.c
+    verify.c)
+endif()
 
 add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
 

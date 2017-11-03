@@ -2,15 +2,15 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-project(npb-ser-3.3 C CXX)
+project(npb-3.3 C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include(Harness-Utils)
 include(Harness-Setparams)
 include(Harness-Version)
 
-get_version(NPBSER_VERSION)
-message(STATUS "Nauseous harness version: ${NPBSER_VERSION}")
+get_version(NPB_VERSION)
+message(STATUS "Nauseous harness version: ${NPB_VERSION}")
 
 message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "CXX compiler: ${CMAKE_CXX_COMPILER}")
@@ -119,6 +119,10 @@ endif()
 #
 # project user options
 #
+
+if(NOT BMK_TYPE)
+  set(BMK_TYPE "SER")
+endif()
 
 if(NOT BMK_CLASS)
   set(BMK_CLASS "U")
