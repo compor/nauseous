@@ -33,6 +33,10 @@ set(SOURCES
   ssor${VEC}.c
   verify.c)
 
+if(BMK_TYPE STREQUAL "OMP")
+  list(APPEND SOURCES "syncs.c")
+endif()
+
 add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
 
 list(APPEND SOURCES ${COMMON_SOURCES})
