@@ -92,16 +92,17 @@ function(PollyWithIdPipeline trgt)
   add_dependencies(${PIPELINE_PREFIX}_link ${DEPENDEE_TRGT})
 
   # do not produce binary because we need to link against a parallel lib
-  #llvmir_attach_executable(
-  #TARGET ${PIPELINE_PREFIX}_bc_exe
-  #DEPENDS ${PIPELINE_PREFIX}_link)
-  #add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
-  #target_link_libraries(${PIPELINE_PREFIX}_bc_exe m)
+  llvmir_attach_executable(
+    TARGET ${PIPELINE_PREFIX}_bc_exe
+    DEPENDS ${PIPELINE_PREFIX}_link)
+  add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
+  target_link_libraries(${PIPELINE_PREFIX}_bc_exe m omp)
 
   ## pipeline aggregate targets
   add_custom_target(${PIPELINE_SUBTARGET} DEPENDS
     ${DEPENDEE_TRGT}
-    ${PIPELINE_PREFIX}_link)
+    ${PIPELINE_PREFIX}_link
+    ${PIPELINE_PREFIX}_bc_exe)
 
   add_dependencies(${PIPELINE_NAME} ${PIPELINE_SUBTARGET})
 
