@@ -128,7 +128,7 @@ if(NOT BMK_CLASS)
   set(BMK_CLASS "U")
 endif()
 
-message(STATUS "using benchmark class: ${BMK_CLASS}")
+message(STATUS "using default benchmark class: ${BMK_CLASS}")
 
 if(NOT BMK_RAND)
   set(BMK_RAND "randdp")

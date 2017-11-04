@@ -48,7 +48,14 @@ set_target_properties(${BMK_PROJECT_NAME} PROPERTIES BMK_NAME ${BMK_NAME})
 
 #
 
-attach_setparams_target(TARGET ${BMK_PROJECT_NAME} BMK_CLASS ${BMK_CLASS}
+set(CLASS ${${BMK_NAME}_BMK_CLASS})
+if(NOT ${BMK_NAME}_BMK_CLASS)
+  set(CLASS ${BMK_CLASS})
+endif()
+
+message(STATUS "${BMK_NAME} benchmark class: ${CLASS}")
+
+attach_setparams_target(TARGET ${BMK_PROJECT_NAME} BMK_CLASS ${CLASS}
   UTILITY_TARGET ${SETPARAMS_UTILITY} UTILITY_EXE ${SETPARAMS_UTILITY})
 
 
