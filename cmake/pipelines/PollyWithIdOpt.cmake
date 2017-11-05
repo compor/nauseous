@@ -78,15 +78,15 @@ function(PollyWithIdOptPipeline trgt)
     set(PIPELINE_CMDLINE_ARG "-polly-func-blacklist=${PIPELINE_INPUT_FILE}")
   endif()
 
-  llvmir_attach_opt_pass_target(
-    TARGET ${PIPELINE_PREFIX}_opt_level3
-    DEPENDS ${DEPENDEE_TRGT}
-    -O3)
-  add_dependencies(${PIPELINE_PREFIX}_opt_level3 ${DEPENDEE_TRGT})
+  #llvmir_attach_opt_pass_target(
+    #TARGET ${PIPELINE_PREFIX}_opt_level2
+    #DEPENDS ${DEPENDEE_TRGT}
+    #-O2)
+  #add_dependencies(${PIPELINE_PREFIX}_opt_level2 ${DEPENDEE_TRGT})
 
   llvmir_attach_opt_pass_target(
     TARGET ${PIPELINE_PREFIX}_link
-    DEPENDS ${PIPELINE_PREFIX}_opt_level3
+    DEPENDS ${DEPENDEE_TRGT}
     -load ${LLVMPOLLY_SHARED_LIBRARY}
     -polly-canonicalize
     -polly-scops
@@ -95,19 +95,27 @@ function(PollyWithIdOptPipeline trgt)
     -polly-parallel
     -polly-export-parallel-id-loops=${REPORT_FILE}
     ${PIPELINE_CMDLINE_ARG})
-  add_dependencies(${PIPELINE_PREFIX}_link ${PIPELINE_PREFIX}_opt_level3)
+  add_dependencies(${PIPELINE_PREFIX}_link ${DEPENDEE_TRGT})
+
+  llvmir_attach_opt_pass_target(
+    TARGET ${PIPELINE_PREFIX}_opt_level2
+    DEPENDS ${PIPELINE_PREFIX}_link
+    -O2)
+  add_dependencies(${PIPELINE_PREFIX}_opt_level2 ${PIPELINE_PREFIX}_link)
 
   # do not produce binary because we need to link against a parallel lib
   llvmir_attach_executable(
     TARGET ${PIPELINE_PREFIX}_bc_exe
-    DEPENDS ${PIPELINE_PREFIX}_link)
-  add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
-  target_link_libraries(${PIPELINE_PREFIX}_bc_exe m omp)
+    DEPENDS ${PIPELINE_PREFIX}_opt_level2)
+    #DEPENDS ${PIPELINE_PREFIX}_link)
+  #add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
+  add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_opt_level2)
+  target_link_libraries(${PIPELINE_PREFIX}_bc_exe m gomp)
 
   ## pipeline aggregate targets
   add_custom_target(${PIPELINE_SUBTARGET} DEPENDS
     ${DEPENDEE_TRGT}
-    ${PIPELINE_PREFIX}_opt_level3
+    ${PIPELINE_PREFIX}_opt_level2
     ${PIPELINE_PREFIX}_link
     ${PIPELINE_PREFIX}_bc_exe)
 
