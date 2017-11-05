@@ -8,10 +8,13 @@ INSTALL_PREFIX="$2"
 
 BMK_CONFIG_FILE="${SRC_DIR}/config/suite_all.txt"
 BMK_CLASS="S"
+BMK_CLASS="B"
+MG_BMK_CLASS="C"
+IS_BMK_CLASS="C"
 
 #
 
-C_FLAGS="-g -Wall -O3"
+C_FLAGS="-g -Wall -O2 -mcmodel=medium"
 LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi" 
 
@@ -29,6 +32,8 @@ cmake \
   -DHARNESS_USE_LLVM=On \
   -DHARNESS_BMK_CONFIG_FILE=${BMK_CONFIG_FILE} \
   -DBMK_CLASS=${BMK_CLASS} \
+  -DMG_BMK_CLASS=${MG_BMK_CLASS} \
+  -DIS_BMK_CLASS=${IS_BMK_CLASS} \
   "${SRC_DIR}"
 
 exit $?
