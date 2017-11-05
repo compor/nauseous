@@ -79,6 +79,7 @@ if(CMAKE_C_COMPILER_ID STREQUAL "Intel"
   set(ICC_FLAGS "${ICC_FLAGS} -O2")
   set(ICC_FLAGS "${ICC_FLAGS} -parallel")
   set(ICC_FLAGS "${ICC_FLAGS} -ipo")
+  set(ICC_FLAGS "${ICC_FLAGS} -mcmodel=medium")
   #set(ICC_FLAGS "${ICC_FLAGS} -xT -axT")
   #set(ICC_FLAGS "${ICC_FLAGS} -xcore2 -axcore2")
   set(ICC_FLAGS "${ICC_FLAGS} -xcorei7 -axcorei7")
