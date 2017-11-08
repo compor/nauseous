@@ -86,12 +86,6 @@ function(SimplifyLoopExitsFrontPipeline trgt)
 
   set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
 
-  get_filename_component(ABS_DATA_DIR data REALPATH)
-  set(BMK_DATA_DIR "${PIPELINE_NAME}_data")
-
-  install(DIRECTORY ${ABS_DATA_DIR}/ DESTINATION
-    ${DEST_DIR}/${BMK_DATA_DIR})
-
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scripts/
     DESTINATION ${DEST_DIR}
     PATTERN "*.sh"
