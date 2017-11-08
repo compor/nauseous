@@ -10,7 +10,7 @@ function(BmkBasicInstallPipeline trgt)
 
   install(TARGETS ${trgt} RUNTIME DESTINATION ${DEST_DIR} OPTIONAL)
 
-  configure_file("scripts/run.sh.in" "scripts/${trgt}_run.sh" @ONLY)
+  configure_file("scripts/run.sh.in" "scripts/run.sh" @ONLY)
 
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scripts/
     DESTINATION ${DEST_DIR}

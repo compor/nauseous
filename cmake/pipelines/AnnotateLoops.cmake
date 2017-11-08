@@ -149,7 +149,7 @@ function(AnnotateLoopsPipeline trgt)
 
   set(BMK_BIN_PREAMBLE "\"\"")
 
-  configure_file("scripts/run.sh.in" "scripts/${PIPELINE_PREFIX}_run.sh" @ONLY)
+  configure_file("scripts/_run.sh.in" "scripts/${PIPELINE_PREFIX}_run.sh" @ONLY)
 
   install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scripts/
     DESTINATION ${DEST_DIR}
