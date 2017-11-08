@@ -8,6 +8,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include(Harness-Utils)
 include(Harness-Setparams)
 include(Harness-Version)
+include(InstallPipelineLLVMIR)
 
 get_version(NPB_VERSION)
 message(STATUS "Nauseous harness version: ${NPB_VERSION}")
@@ -60,6 +61,9 @@ set(HARNESS_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/config")
 
 # project options checks and processing
 
+configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
+  "preamble/preamble.sh" @ONLY)
+
 if(HARNESS_USE_LLVM)
   find_package(LLVM REQUIRED CONFIG)
 
@@ -76,7 +80,6 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_PIPELINE_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_FRAGMENT_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}")
-
 
 if(LLVM_IR_UTIL_FOUND)
   if(NOT HARNESS_PIPELINE_CONFIG_FILE)
@@ -168,16 +171,15 @@ endforeach()
 
 # installation
 
-install(DIRECTORY ${HARNESS_INVOCATIONS_DIR} DESTINATION .)
 install(DIRECTORY ${HARNESS_CONFIG_DIR} DESTINATION .)
 install(DIRECTORY ${HARNESS_INSTALL_TREE_SCRIPTS_DIR} DESTINATION scripts)
-install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/CPU2006/preamble/" 
-  DESTINATION "CPU2006/preamble/")
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/preamble/" 
+  DESTINATION "preamble/")
 
-#add_custom_target(install-build-scripts 
-  #ALL
-  #COMMAND ${CMAKE_COMMAND} -E copy_directory 
-  #${HARNESS_BUILD_TREE_SCRIPTS_SRC_DIR}
-  #${HARNESS_BUILD_TREE_SCRIPTS_DEST_DIR}
-  #COMMENT "copying build-tree related scripts")
+add_custom_target(install-build-scripts 
+  ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_directory 
+  ${HARNESS_BUILD_TREE_SCRIPTS_SRC_DIR}
+  ${HARNESS_BUILD_TREE_SCRIPTS_DEST_DIR}
+  COMMENT "copying build-tree related scripts")
 
