@@ -9,7 +9,9 @@ SR_KEY=0
 
 subrun() { SR_KEY=$((SR_KEY+1)); }
 
-source ${DIR}/../preamble/${PIPELINE_NAME}_preamble.sh
+if [[ -e ${DIR}/../preamble/@PIPELINE_NAME@_preamble.sh ]]; then
+  source ${DIR}/../preamble/@PIPELINE_NAME@_preamble.sh
+fi
 
 BMK_BIN_NAME="@BMK_BIN_NAME@"
 BMK_BIN_PREAMBLE="@BMK_BIN_PREAMBLE@"
