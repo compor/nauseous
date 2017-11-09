@@ -1,27 +1,62 @@
 # cmake file
 
-message(STATUS "setting up pipeline LoopRuntimeProfilerLoopDepth")
-
-find_package(LoopRuntimeProfiler CONFIG)
-
-if(NOT LoopRuntimeProfiler_FOUND)
-  message(WARNING "package LoopRuntimeProfiler was not found; skipping.")
-
-  return()
-endif()
-
-get_target_property(LRP_LIB_LOCATION LLVMLoopRuntimeProfilerPass LOCATION)
-
-# configuration
-
-macro(LoopRuntimeProfilerLoopDepthPipelineSetup)
+macro(LoopRuntimeProfilerLoopDepthPipelineSetupNames)
   set(PIPELINE_NAME "LoopRuntimeProfilerLoopDepth")
   set(PIPELINE_INSTALL_TARGET "${PIPELINE_NAME}-install")
 endmacro()
 
+macro(LoopRuntimeProfilerLoopDepthPipelineSetup)
+  LoopRuntimeProfilerLoopDepthPipelineSetupNames()
+
+  message(STATUS "setting up pipeline ${PIPELINE_NAME}")
+
+  if(NOT DEFINED ENV{HARNESS_INPUT_DIR})
+    message(FATAL_ERROR
+      "${PIPELINE_NAME} env variable HARNESS_INPUT_DIR is not defined")
+  endif()
+
+  if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
+    message(FATAL_ERROR
+      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined")
+  endif()
+
+  file(TO_CMAKE_PATH $ENV{HARNESS_INPUT_DIR} HARNESS_INPUT_DIR)
+  if(NOT IS_DIRECTORY ${HARNESS_INPUT_DIR})
+    message(FATAL_ERROR "${PIPELINE_NAME} HARNESS_INPUT_DIR does not exist")
+  endif()
+
+  file(TO_CMAKE_PATH $ENV{HARNESS_REPORT_DIR} HARNESS_REPORT_DIR)
+  if(NOT EXISTS ${HARNESS_REPORT_DIR})
+    file(MAKE_DIRECTORY ${HARNESS_REPORT_DIR})
+  endif()
+
+  message(STATUS
+    "${PIPELINE_NAME} uses env variable: HARNESS_INPUT_DIR=${HARNESS_INPUT_DIR}")
+  message(STATUS
+    "${PIPELINE_NAME} uses env variable: HARNESS_REPORT_DIR=${HARNESS_REPORT_DIR}")
+
+  #
+
+  find_package(LoopRuntimeProfiler CONFIG)
+
+  if(NOT LoopRuntimeProfiler_FOUND)
+    message(WARNING "package LoopRuntimeProfiler was not found; skipping.")
+
+    return()
+  endif()
+
+  get_target_property(LRP_LIB_LOCATION LLVMLoopRuntimeProfilerPass LOCATION)
+
+  configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
+    "preamble/${PIPELINE_NAME}_preamble.sh" @ONLY)
+endmacro()
+
+LoopRuntimeProfilerLoopDepthPipelineSetup()
+
+#
 
 function(LoopRuntimeProfilerLoopDepthPipeline trgt)
-  LoopRuntimeProfilerLoopDepthPipelineSetup()
+  LoopRuntimeProfilerLoopDepthPipelineSetupNames()
 
   if(NOT TARGET ${PIPELINE_NAME})
     add_custom_target(${PIPELINE_NAME})
@@ -83,35 +118,31 @@ function(LoopRuntimeProfilerLoopDepthPipeline trgt)
     PATTERN "*.sh"
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
 
+
+  # installation
+  get_property(bmk_name TARGET ${trgt} PROPERTY BMK_NAME)
+  set(DEST_DIR "${bmk_name}")
+
+  install(TARGETS ${PIPELINE_PREFIX}_bc_exe
+    DESTINATION ${DEST_DIR} OPTIONAL)
+
+  set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
+
+  set(BMK_BIN_PREAMBLE "\"\"")
+
+  configure_file("scripts/_run.sh.in" "scripts/${PIPELINE_PREFIX}_run.sh" @ONLY)
+
+  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scripts/
+    DESTINATION ${DEST_DIR}
+    PATTERN "*.sh"
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
+
   # IR installation
-  InstallLoopRuntimeProfilerLoopDepthPipelineLLVMIR(${PIPELINE_PREFIX}_link ${bmk_name})
-endfunction()
-
-
-function(InstallLoopRuntimeProfilerLoopDepthPipelineLLVMIR pipeline_part_trgt bmk_name)
-  LoopRuntimeProfilerLoopDepthPipelineSetup()
-
   if(NOT TARGET ${PIPELINE_INSTALL_TARGET})
     add_custom_target(${PIPELINE_INSTALL_TARGET})
   endif()
 
-  get_property(llvmir_dir TARGET ${pipeline_part_trgt} PROPERTY LLVMIR_DIR)
-
-  # strip trailing slashes
-  string(REGEX REPLACE "(.*[^/]+)(//*)$" "\\1" llvmir_stripped_dir ${llvmir_dir})
-  get_filename_component(llvmir_part_dir ${llvmir_stripped_dir} NAME)
-
-  set(PIPELINE_DEST_SUBDIR
-    ${CMAKE_INSTALL_PREFIX}/CPU2006/${bmk_name}/llvm-ir/${llvmir_part_dir})
-
-  set(PIPELINE_PART_INSTALL_TARGET "${pipeline_part_trgt}-install")
-
-  add_custom_target(${PIPELINE_PART_INSTALL_TARGET}
-    COMMAND ${CMAKE_COMMAND} -E
-    copy_directory ${llvmir_dir} ${PIPELINE_DEST_SUBDIR})
-
-  add_dependencies(${PIPELINE_PART_INSTALL_TARGET} ${pipeline_part_trgt})
-  add_dependencies(${PIPELINE_INSTALL_TARGET} ${PIPELINE_PART_INSTALL_TARGET})
+  InstallPipelineLLVMIR(DEPENDS ${PIPELINE_PREFIX}_link
+    ATTACH_TO_TARGET ${PIPELINE_INSTALL_TARGET} BMK_NAME ${bmk_name})
 endfunction()
-
 
