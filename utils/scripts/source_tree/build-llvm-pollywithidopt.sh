@@ -3,8 +3,7 @@
 [[ -z $1 ]] && echo "error: source directory was not provided" && exit 1
 SRC_DIR=$1
 
-INSTALL_PREFIX="$2"
-[[ -z $2 ]] && INSTALL_PREFIX="${SRC_DIR}/../install/"
+INSTALL_PREFIX=${2:-../install/}
 
 [[ -z $AnnotateLoops_DIR ]] && echo "error: AnnotateLoops_DIR is not set" && exit 2
 [[ -z ${LLVMPOLLY_ROOT} ]] && echo "error: LLVMPOLLY_ROOT is not set" && exit 2
@@ -41,6 +40,4 @@ CC=clang CXX=clang++ \
   -DMG_BMK_CLASS=${MG_BMK_CLASS} \
   -DIS_BMK_CLASS=${IS_BMK_CLASS} \
   "${SRC_DIR}"
-
-exit $?
 
