@@ -36,7 +36,11 @@ The actual source files for each benchmark are not included, but use [this][3] i
 4. Run `cmake` and `cmake --build .` from the previously created build directory.
    For examples on the various options have a look at the convenience build scripts located in the
    `utils/scripts/source_tree` subdirectory.
-5. Optionally, you can install the benchmarks depending on the configuration from the previous step.
+5. Optionally, you can install the benchmarks by
+
+   `cmake -DCMAKE_INSTALL_PREFIX=[path-to-install] -P cmake_install.cmake`
+
+   Omitting `CMAKE_INSTALL_PREFIX` will use the `../install/` directory relative to the build directory.
 
 
 [1]: www.nas.nasa.gov/publications/npb.html
