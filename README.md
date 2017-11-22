@@ -25,7 +25,7 @@ The actual source files for each benchmark are not included, but use [this][3] i
 
 ## How to use
 
-1. Clone this repo and the benchmark source [repo][2].
+1. `git clone --recursive` this repo and `git clone` the benchmark source [repo][2].
 2. Create symlinks to the `src` subdirectory of each benchmark program.
    This can be automated with the relevant script found in the `utils/scripts/source_tree` subdirectory of this repo, 
    for example:
