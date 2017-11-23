@@ -79,20 +79,6 @@ function(SimplifyLoopExitsFrontPipeline trgt)
 
   # installation
   get_property(bmk_name TARGET ${trgt} PROPERTY BMK_NAME)
-  set(DEST_DIR "CPU2006/${bmk_name}")
-
-  install(TARGETS ${PIPELINE_PREFIX}_bc_exe
-    DESTINATION ${DEST_DIR} OPTIONAL)
-
-  set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
-
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/scripts/
-    DESTINATION ${DEST_DIR}
-    PATTERN "*.sh"
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
-
-  # IR installation
-  get_property(bmk_name TARGET ${trgt} PROPERTY BMK_NAME)
   set(DEST_DIR "${bmk_name}")
 
   install(TARGETS ${PIPELINE_PREFIX}_bc_exe

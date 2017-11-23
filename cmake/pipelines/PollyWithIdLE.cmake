@@ -11,12 +11,16 @@ macro(PollyWithIdLEPipelineSetup)
   message(STATUS "setting up pipeline ${PIPELINE_NAME}")
 
   if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
-    message(FATAL_ERROR
-      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined")
+    message(WARNING
+      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined. \
+      Using ${CMAKE_BINARY_DIR}/reports/")
+
+      set(ENV{HARNESS_REPORT_DIR} "${CMAKE_BINARY_DIR}/reports/")
   endif()
 
-  if(NOT IS_DIRECTORY $ENV{HARNESS_REPORT_DIR})
-    message(FATAL_ERROR "${PIPELINE_NAME} HARNESS_REPORT_DIR does not exist")
+  file(TO_CMAKE_PATH $ENV{HARNESS_REPORT_DIR} HARNESS_REPORT_DIR)
+  if(NOT EXISTS ${HARNESS_REPORT_DIR})
+    file(MAKE_DIRECTORY ${HARNESS_REPORT_DIR})
   endif()
 
   message(STATUS
@@ -25,10 +29,6 @@ macro(PollyWithIdLEPipelineSetup)
   #
 
   find_package(LLVMPolly REQUIRED)
-
-  if(NOT LLVMPOLLY_FOUND)
-    message(FATAL_ERROR "${PIPELINE_NAME} package Polly was not found")
-  endif()
 endmacro()
 
 PollyWithIdLEPipelineSetup()

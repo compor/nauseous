@@ -13,15 +13,15 @@ macro(AnnotateLoopsPipelineSetup)
   if(NOT DEFINED ENV{HARNESS_INPUT_DIR})
     message(WARNING
       "${PIPELINE_NAME} env variable HARNESS_INPUT_DIR is not defined. \
-      Using ${CMAKE_BINARY_DIR}/input/")
+      Using ${CMAKE_BINARY_DIR}/inputs/")
 
-      set(ENV{HARNESS_INPUT_DIR} "${CMAKE_BINARY_DIR}/input/")
+      set(ENV{HARNESS_INPUT_DIR} "${CMAKE_BINARY_DIR}/inputs/")
   endif()
 
   if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
     message(WARNING
       "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined. \
-      Using ${CMAKE_BINARY_DIR}/reports")
+      Using ${CMAKE_BINARY_DIR}/reports/")
 
       set(ENV{HARNESS_REPORT_DIR} "${CMAKE_BINARY_DIR}/reports/")
   endif()
@@ -42,9 +42,9 @@ macro(AnnotateLoopsPipelineSetup)
   endif()
 
   message(STATUS
-    "${PIPELINE_NAME} uses env variable: HARNESS_INPUT_DIR=${HARNESS_INPUT_DIR}")
+    "${PIPELINE_NAME} uses env variable: HARNESS_INPUT_DIR=$ENV{HARNESS_INPUT_DIR}")
   message(STATUS
-    "${PIPELINE_NAME} uses env variable: HARNESS_REPORT_DIR=${HARNESS_REPORT_DIR}")
+    "${PIPELINE_NAME} uses env variable: HARNESS_REPORT_DIR=$ENV{HARNESS_REPORT_DIR}")
   message(STATUS
     "${PIPELINE_NAME} uses env variable: ANNOTATELOOPS_WHITELIST_FILE=$ENV{ANNOTATELOOPS_WHITELIST_FILE}")
 

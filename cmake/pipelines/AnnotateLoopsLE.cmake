@@ -11,23 +11,29 @@ macro(AnnotateLoopsLEPipelineSetup)
   message(STATUS "setting up pipeline ${PIPELINE_NAME}")
 
   if(NOT DEFINED ENV{HARNESS_INPUT_DIR})
-    message(FATAL_ERROR
-      "${PIPELINE_NAME} env variable HARNESS_INPUT_DIR is not defined")
+    message(WARNING
+      "${PIPELINE_NAME} env variable HARNESS_INPUT_DIR is not defined. \
+      Using ${CMAKE_BINARY_DIR}/inputs/")
+
+      set(ENV{HARNESS_INPUT_DIR} "${CMAKE_BINARY_DIR}/inputs/")
   endif()
 
   if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
-    message(FATAL_ERROR
-      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined")
+    message(WARNING
+      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined. \
+      Using ${CMAKE_BINARY_DIR}/reports")
+
+      set(ENV{HARNESS_REPORT_DIR} "${CMAKE_BINARY_DIR}/reports/")
   endif()
 
   if(NOT DEFINED ENV{ANNOTATELOOPS_WHITELIST_FILE})
-    message(FATAL_ERROR
+    message(WARNING
       "${PIPELINE_NAME} env variable ANNOTATELOOPS_WHITELIST_FILE is not defined")
   endif()
 
   file(TO_CMAKE_PATH $ENV{HARNESS_INPUT_DIR} HARNESS_INPUT_DIR)
-  if(NOT IS_DIRECTORY ${HARNESS_INPUT_DIR})
-    message(FATAL_ERROR "${PIPELINE_NAME} HARNESS_INPUT_DIR does not exist")
+  if(NOT EXISTS ${HARNESS_INPUT_DIR})
+    file(MAKE_DIRECTORY ${HARNESS_INPUT_DIR})
   endif()
 
   file(TO_CMAKE_PATH $ENV{HARNESS_REPORT_DIR} HARNESS_REPORT_DIR)
@@ -44,13 +50,12 @@ macro(AnnotateLoopsLEPipelineSetup)
 
   #
 
-  find_package(AnnotateLoops CONFIG)
-
-  if(NOT AnnotateLoops_FOUND)
-    message(FATAL_ERROR "package AnnotateLoops was not found")
-  endif()
+  find_package(AnnotateLoops CONFIG REQUIRED)
 
   get_target_property(ANNOTATELOOPS_LIB_LOCATION LLVMAnnotateLoopsPass LOCATION)
+
+  configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
+    "preamble/${PIPELINE_NAME}_preamble.sh" @ONLY)
 endmacro()
 
 AnnotateLoopsLEPipelineSetup()
@@ -113,6 +118,7 @@ function(AnnotateLoopsLEPipeline trgt)
     -annotate-loops
     -al-loop-start-id=2
     -al-loop-id-interval=4
+    -al-loop-lines
     -al-stats=${REPORT_FILE}
     ${PIPELINE_CMDLINE_ARG})
   add_dependencies(${PIPELINE_PREFIX}_opt2 ${PIPELINE_PREFIX}_link)
