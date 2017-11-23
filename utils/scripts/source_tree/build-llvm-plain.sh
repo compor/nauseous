@@ -18,6 +18,7 @@ C_FLAGS="-g -Wall -O2 -mcmodel=medium"
 
 CC=clang CXX=clang++ \
 cmake \
+  -GNinja \
   -DCMAKE_POLICY_DEFAULT_CMP0056=NEW \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=On \
   -DCMAKE_BUILD_TYPE=Debug \
