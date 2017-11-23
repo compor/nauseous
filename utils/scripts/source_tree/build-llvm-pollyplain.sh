@@ -13,8 +13,8 @@ BMK_CLASS="S"
 #
 
 C_FLAGS="-g -Wall -O3"
-#LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
-#LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi" 
+LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
+LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi" 
 
 CC=clang CXX=clang++ \
   cmake \
