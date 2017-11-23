@@ -12,8 +12,11 @@ macro(DecoupleLoopsFrontPipelineSetup)
   message(STATUS "setting up pipeline DecoupleLoopsFront")
 
   if(NOT DEFINED ENV{HARNESS_REPORT_DIR})
-    message(FATAL_ERROR
-      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined")
+    message(WARNING
+      "${PIPELINE_NAME} env variable HARNESS_REPORT_DIR is not defined. \
+      Using ${CMAKE_BINARY_DIR}/reports/")
+
+      set(ENV{HARNESS_REPORT_DIR} "${CMAKE_BINARY_DIR}/reports/")
   endif()
 
   file(TO_CMAKE_PATH $ENV{HARNESS_REPORT_DIR} HARNESS_REPORT_DIR)
@@ -26,9 +29,12 @@ macro(DecoupleLoopsFrontPipelineSetup)
 
   #
 
-  find_package(DecoupleLoopsFront CONFIG)
+  find_package(DecoupleLoopsFront CONFIG REQUIRED)
 
   get_target_property(DLF_LIB_LOCATION LLVMDecoupleLoopsFrontPass LOCATION)
+
+  configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
+    "preamble/${PIPELINE_NAME}_preamble.sh" @ONLY)
 endmacro()
 
 DecoupleLoopsFrontPipelineSetup()
@@ -94,7 +100,7 @@ function(DecoupleLoopsFrontPipeline trgt)
 
   set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
 
-  set(BMK_BIN_PREAMBLE "")
+  set(BMK_BIN_PREAMBLE "\"\"")
 
   get_filename_component(ABS_DATA_DIR data REALPATH)
   set(BMK_DATA_DIR "${PIPELINE_NAME}_data")
@@ -110,34 +116,11 @@ function(DecoupleLoopsFrontPipeline trgt)
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE)
 
   # IR installation
-  InstallDecoupleLoopsFrontPipelineLLVMIR(${PIPELINE_PREFIX}_le ${bmk_name})
-endfunction()
-
-
-function(InstallDecoupleLoopsFrontPipelineLLVMIR pipeline_part_trgt bmk_name)
-  DecoupleLoopsFrontPipelineSetupNames()
-
   if(NOT TARGET ${PIPELINE_INSTALL_TARGET})
     add_custom_target(${PIPELINE_INSTALL_TARGET})
   endif()
 
-  get_property(llvmir_dir TARGET ${pipeline_part_trgt} PROPERTY LLVMIR_DIR)
-
-  # strip trailing slashes
-  string(REGEX REPLACE "(.*[^/]+)(//*)$" "\\1" llvmir_stripped_dir ${llvmir_dir})
-  get_filename_component(llvmir_part_dir ${llvmir_stripped_dir} NAME)
-
-  set(PIPELINE_DEST_SUBDIR
-    ${CMAKE_INSTALL_PREFIX}/CPU2006/${bmk_name}/llvm-ir/${llvmir_part_dir})
-
-  set(PIPELINE_PART_INSTALL_TARGET "${pipeline_part_trgt}-install")
-
-  add_custom_target(${PIPELINE_PART_INSTALL_TARGET}
-    COMMAND ${CMAKE_COMMAND} -E
-    copy_directory ${llvmir_dir} ${PIPELINE_DEST_SUBDIR})
-
-  add_dependencies(${PIPELINE_PART_INSTALL_TARGET} ${pipeline_part_trgt})
-  add_dependencies(${PIPELINE_INSTALL_TARGET} ${PIPELINE_PART_INSTALL_TARGET})
+  InstallPipelineLLVMIR(DEPENDS ${PIPELINE_PREFIX}_dlf
+    ATTACH_TO_TARGET ${PIPELINE_INSTALL_TARGET} BMK_NAME ${bmk_name})
 endfunction()
-
 
