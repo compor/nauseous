@@ -1,17 +1,22 @@
 # cmake file
 
-message(STATUS "setting up pipeline LoopC14N")
-
-# configuration
-
-macro(LoopC14NPipelineSetup)
+macro(LoopC14NPipelineSetupNames)
   set(PIPELINE_NAME "LoopC14N")
   set(PIPELINE_INSTALL_TARGET "${PIPELINE_NAME}-install")
 endmacro()
 
+macro(LoopC14NPipelineSetup)
+  LoopC14NPipelineSetupNames()
+
+  message(STATUS "setting up pipeline ${PIPELINE_NAME}")
+endmacro()
+
+LoopC14NPipelineSetup()
+
+#
 
 function(LoopC14NPipeline trgt)
-  LoopC14NPipelineSetup()
+  LoopC14NPipelineSetupNames()
 
   if(NOT TARGET ${PIPELINE_NAME})
     add_custom_target(${PIPELINE_NAME})
@@ -21,6 +26,7 @@ function(LoopC14NPipeline trgt)
   set(PIPELINE_PREFIX ${PIPELINE_SUBTARGET})
 
   ## pipeline targets and chaining
+
   llvmir_attach_bc_target(
     TARGET ${PIPELINE_PREFIX}_bc
     DEPENDS ${trgt})

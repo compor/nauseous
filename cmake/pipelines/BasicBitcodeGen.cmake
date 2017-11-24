@@ -2,16 +2,25 @@
 
 message(STATUS "setting up pipeline BasicBitcodeGen")
 
-# configuration
-
-macro(BasicBitcodeGenPipelineSetup)
+macro(BasicBitcodeGenPipelineSetupNames)
   set(PIPELINE_NAME "BasicBitcodeGen")
   set(PIPELINE_INSTALL_TARGET "${PIPELINE_NAME}-install")
 endmacro()
 
+#
+
+macro(BasicBitcodeGenPipelineSetup)
+  BasicBitcodeGenPipelineSetupNames()
+
+  message(STATUS "setting up pipeline ${PIPELINE_NAME}")
+endmacro()
+
+BasicBitcodeGenPipelineSetup()
+
+#
 
 function(BasicBitcodeGenPipeline trgt)
-  BasicBitcodeGenPipelineSetup()
+  BasicBitcodeGenPipelineSetupNames()
 
   if(NOT TARGET ${PIPELINE_NAME})
     add_custom_target(${PIPELINE_NAME})
@@ -21,6 +30,7 @@ function(BasicBitcodeGenPipeline trgt)
   set(PIPELINE_PREFIX ${PIPELINE_SUBTARGET})
 
   ## pipeline targets and chaining
+
   llvmir_attach_bc_target(
     TARGET ${PIPELINE_PREFIX}_bc
     DEPENDS ${trgt})
@@ -37,6 +47,14 @@ function(BasicBitcodeGenPipeline trgt)
   add_dependencies(${PIPELINE_PREFIX}_bc_exe ${PIPELINE_PREFIX}_link)
 
   target_link_libraries(${PIPELINE_PREFIX}_bc_exe m)
+
+  ## pipeline aggregate targets
+  add_custom_target(${PIPELINE_SUBTARGET} DEPENDS
+    ${PIPELINE_PREFIX}_bc
+    ${PIPELINE_PREFIX}_link
+    ${PIPELINE_PREFIX}_bc_exe)
+
+  add_dependencies(${PIPELINE_NAME} ${PIPELINE_SUBTARGET})
 
 
   # installation
