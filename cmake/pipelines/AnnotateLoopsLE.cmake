@@ -149,8 +149,8 @@ function(AnnotateLoopsLEPipeline trgt)
     DESTINATION ${DEST_DIR} OPTIONAL)
 
   set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
-
-  set(BMK_BIN_PREAMBLE "\"\"")
+  set(BMK_BIN_PREAMBLE "")
+  set(PIPELINE_SCRIPT_PREFIX "${PIPELINE_NAME}")
 
   configure_file("scripts/_run.sh.in" "scripts/${PIPELINE_PREFIX}_run.sh" @ONLY)
 

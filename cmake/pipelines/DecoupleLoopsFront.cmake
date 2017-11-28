@@ -99,8 +99,8 @@ function(DecoupleLoopsFrontPipeline trgt)
     DESTINATION ${DEST_DIR} OPTIONAL)
 
   set(BMK_BIN_NAME "${PIPELINE_PREFIX}_bc_exe")
-
-  set(BMK_BIN_PREAMBLE "\"\"")
+  set(BMK_BIN_PREAMBLE "")
+  set(PIPELINE_SCRIPT_PREFIX "${PIPELINE_NAME}")
 
   get_filename_component(ABS_DATA_DIR data REALPATH)
   set(BMK_DATA_DIR "${PIPELINE_NAME}_data")
