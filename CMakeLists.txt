@@ -33,15 +33,16 @@ if(NOT HARNESS_REPORT_DIR)
   set(HARNESS_REPORT_DIR "${CMAKE_BINARY_DIR}/reports/")
   file(MAKE_DIRECTORY ${HARNESS_REPORT_DIR})
 endif()
-  
+
 set(HARNESS_BMK_SOURCE_SUBDIR "src")
 
 set(HARNESS_CMAKE_PIPELINE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/pipelines/")
 
-# aggregate list variables for appending commands 
+# aggregate list variables for appending commands
 # per each benchmark without editing each cmake file separately
 set(HARNESS_CMAKE_FRAGMENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/fragments/")
-set(HARNESS_CMAKE_BINARY_FRAGMENT_DIR "${CMAKE_CURRENT_BINARY_DIR}/cmake/fragments/")
+set(HARNESS_CMAKE_BINARY_FRAGMENT_DIR
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake/fragments/")
 set(HARNESS_CMAKE_FRAGMENT_FILES "")
 
 set(HARNESS_LLVMIR_CMAKE_FRAGMENT_FILES "")
@@ -70,7 +71,7 @@ if(HARNESS_USE_LLVM)
   if(LLVM_FOUND)
     set(LLVM_LIB_DIR ${LLVM_TOOLS_BINARY_DIR}/../lib/)
 
-    list(APPEND CMAKE_MODULE_PATH 
+    list(APPEND CMAKE_MODULE_PATH
       "${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvm-ir-cmake-utils/cmake/")
 
     include(LLVMIRUtil RESULT_VARIABLE LLVM_IR_UTIL_FOUND)
@@ -85,7 +86,8 @@ if(LLVM_IR_UTIL_FOUND)
   if(NOT HARNESS_PIPELINE_CONFIG_FILE)
     message(WARNING "Benchmark config file is not set")
   elseif(NOT EXISTS ${HARNESS_PIPELINE_CONFIG_FILE})
-    message(WARNING "Benchmark config file does not exist: ${HARNESS_PIPELINE_CONFIG_FILE}")
+    message(WARNING
+      "Benchmark config file does not exist: ${HARNESS_PIPELINE_CONFIG_FILE}")
   else()
     file(STRINGS ${HARNESS_PIPELINE_CONFIG_FILE} PIPELINES)
   endif()
@@ -95,8 +97,8 @@ if(LLVM_IR_UTIL_FOUND)
     include(${PLINE})
   endforeach()
 
-  create_file_fragment(FILENAME 
-    ${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}/BasicFragment.cmake 
+  create_file_fragment(FILENAME
+    ${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}/BasicFragment.cmake
     PIPELINES ${PIPELINES})
 endif()
 
@@ -125,9 +127,11 @@ endif()
 # project user options checks and processing
 
 if(NOT HARNESS_BMK_CONFIG_FILE)
-  message(FATAL_ERROR "Benchmark config file HARNESS_BMK_CONFIG_FILE is not set")
+  message(FATAL_ERROR
+    "Benchmark config file HARNESS_BMK_CONFIG_FILE is not set")
 elseif(NOT EXISTS ${HARNESS_BMK_CONFIG_FILE})
-  message(FATAL_ERROR "Benchmark config file does not exist: ${HARNESS_BMK_CONFIG_FILE}")
+  message(FATAL_ERROR
+    "Benchmark config file does not exist: ${HARNESS_BMK_CONFIG_FILE}")
 endif()
 
 
@@ -173,12 +177,12 @@ endforeach()
 
 install(DIRECTORY ${HARNESS_CONFIG_DIR} DESTINATION .)
 install(DIRECTORY ${HARNESS_INSTALL_TREE_SCRIPTS_DIR} DESTINATION scripts)
-install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/preamble/" 
+install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/preamble/"
   DESTINATION "preamble/")
 
-add_custom_target(install-build-scripts 
+add_custom_target(install-build-scripts
   ALL
-  COMMAND ${CMAKE_COMMAND} -E copy_directory 
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${HARNESS_BUILD_TREE_SCRIPTS_SRC_DIR}
   ${HARNESS_BUILD_TREE_SCRIPTS_DEST_DIR}
   COMMENT "copying build-tree related scripts")
