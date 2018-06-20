@@ -25,7 +25,7 @@ The actual source files for each benchmark are not included, but use [this][3] i
 
 ## How to use
 
-1. `git clone --recursive` this repo and `git clone` the benchmark source [repo][2].
+1. `git clone --recursive` this repo and `git clone` the benchmark source [repo][3].
 2. Create symlinks to the `src` subdirectory of each benchmark program.
    This can be automated with the relevant script found in the `utils/scripts/source_tree` subdirectory of this repo, 
    for example:
@@ -56,7 +56,7 @@ TODO
 For a general description on how this harness operates please have a look [here][6].
 
 
-[1]: www.nas.nasa.gov/publications/npb.html
+[1]: http://www.nas.nasa.gov/publications/npb.html
 [2]: http://aces.snu.ac.kr/software/snu-npb/
 [3]: https://github.com/compor/SNU_NPB
 [4]: https://cmake.org
