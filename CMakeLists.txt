@@ -5,10 +5,10 @@ cmake_minimum_required(VERSION 3.0)
 project(npb-3.3 C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+
 include(Harness-Utils)
 include(Harness-Setparams)
 include(Harness-Version)
-include(InstallPipelineLLVMIR)
 
 get_version(NPB_VERSION)
 message(STATUS "Nauseous harness version: ${NPB_VERSION}")
@@ -36,18 +36,6 @@ endif()
 
 set(HARNESS_BMK_SOURCE_SUBDIR "src")
 
-set(HARNESS_CMAKE_PIPELINE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/pipelines/")
-
-# aggregate list variables for appending commands
-# per each benchmark without editing each cmake file separately
-set(HARNESS_CMAKE_FRAGMENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/fragments/")
-set(HARNESS_CMAKE_BINARY_FRAGMENT_DIR
-  "${CMAKE_CURRENT_BINARY_DIR}/cmake/fragments/")
-set(HARNESS_CMAKE_FRAGMENT_FILES "")
-
-set(HARNESS_LLVMIR_CMAKE_FRAGMENT_FILES "")
-set(HARNESS_END_CMAKE_FRAGMENT_FILES "")
-
 set(HARNESS_BUILD_TREE_SCRIPTS_SRC_DIR
   "${CMAKE_CURRENT_SOURCE_DIR}/utils/scripts/build_tree/")
 
@@ -66,40 +54,38 @@ configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
   "preamble/preamble.sh" @ONLY)
 
 if(HARNESS_USE_LLVM)
-  find_package(LLVM REQUIRED CONFIG)
+  if("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR
+      "${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
+    find_package(LLVM REQUIRED CONFIG)
 
-  if(LLVM_FOUND)
-    set(LLVM_LIB_DIR ${LLVM_TOOLS_BINARY_DIR}/../lib/)
+    if(LLVM_FOUND)
+      set(LLVM_LIB_DIR ${LLVM_TOOLS_BINARY_DIR}/../lib/)
 
-    list(APPEND CMAKE_MODULE_PATH
-      "${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvm-ir-cmake-utils/cmake/")
+      list(APPEND CMAKE_MODULE_PATH
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvm-ir-cmake-utils/cmake/")
 
-    include(LLVMIRUtil RESULT_VARIABLE LLVM_IR_UTIL_FOUND)
+      include(LLVMIRUtil RESULT_VARIABLE LLVM_IR_UTIL_FOUND)
+    endif()
+  else()
+    message(FATAL_ERROR "Selected compiler cannot generate LLVM IR")
   endif()
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_PIPELINE_DIR}")
-list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_FRAGMENT_DIR}")
-list(APPEND CMAKE_MODULE_PATH "${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}")
-
 if(LLVM_IR_UTIL_FOUND)
-  if(NOT HARNESS_PIPELINE_CONFIG_FILE)
-    message(WARNING "Benchmark config file is not set")
-  elseif(NOT EXISTS ${HARNESS_PIPELINE_CONFIG_FILE})
-    message(WARNING
-      "Benchmark config file does not exist: ${HARNESS_PIPELINE_CONFIG_FILE}")
-  else()
-    file(STRINGS ${HARNESS_PIPELINE_CONFIG_FILE} PIPELINES)
+  list(APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvm-ir-cmake-pipelines/cmake/")
+  include(LLVMIRPipelines)
+
+  set(FRAGMENT_FILE "main_fragment")
+
+  llvmir_pipelines_setup(
+    DEPENDS BMK_PROJECT_NAME
+    OUTPUT_FILE ${FRAGMENT_FILE})
+
+  # check if there are any pipelines configured
+  if(LLVMIR_PIPELINES_TO_INCLUDE)
+    set(HARNESS_CMAKE_FRAGMENT_FILES "${FRAGMENT_FILE}")
   endif()
-
-  foreach(PLINE ${PIPELINES})
-    message(STATUS "including pipeline: ${PLINE}")
-    include(${PLINE})
-  endforeach()
-
-  create_file_fragment(FILENAME
-    ${HARNESS_CMAKE_BINARY_FRAGMENT_DIR}/BasicFragment.cmake
-    PIPELINES ${PIPELINES})
 endif()
 
 #
@@ -161,9 +147,6 @@ set(CMAKE_INSTALL_MESSAGE "LAZY")
 
 set(SETPARAMS_UTILITY "setparams")
 add_executable(${SETPARAMS_UTILITY} sys/setparams.c)
-
-# concatenate fragment lists
-set(HARNESS_CMAKE_FRAGMENT_FILES BasicFragment)
 
 file(STRINGS ${HARNESS_BMK_CONFIG_FILE} BENCHMARKS)
 
