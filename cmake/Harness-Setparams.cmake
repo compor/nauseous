@@ -7,7 +7,11 @@ function(attach_setparams_target)
   set(oneValueArgs TARGET BMK_CLASS UTILITY_TARGET UTILITY_EXE)
   set(multiValueArgs)
 
-  cmake_parse_arguments(SP "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+  cmake_parse_arguments(SP
+    "${options}"
+    "${oneValueArgs}"
+    "${multiValueArgs}"
+    ${ARGN})
 
   set(ATTACHED_SP_TARGET ${SP_TARGET}_setparams)
 
