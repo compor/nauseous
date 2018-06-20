@@ -4,10 +4,12 @@ set(BMK_NAME "BT")
 string(TOLOWER ${BMK_NAME} BMK_NAME_LOWER)
 set(BMK_PROJECT_NAME ${BMK_NAME_LOWER})
 
-check_bmk_processing(hasSrcDir)
+file(TO_CMAKE_PATH
+  "${CMAKE_CURRENT_SOURCE_DIR}/${HARNESS_BMK_SOURCE_SUBDIR}"
+  SRC_DIR)
 
-if(NOT ${hasSrcDir})
-  message(STATUS "skipping project: ${BMK_PROJECT_NAME}") 
+if(NOT EXISTS "${SRC_DIR}" AND NOT IS_DIRECTORY "${SRC_DIR}")
+  message(STATUS "skipping project: ${BMK_PROJECT_NAME}")
   return()
 endif()
 
@@ -18,15 +20,15 @@ set(SOURCES
   adi.c
   bt.c
   error.c
-  exact_rhs.c                                    
-  exact_solution.c                               
-  initialize.c                                   
-  rhs.c                                          
-  set_constants.c                                
-  solve_subs.c                                   
-  verify.c                                       
-  x_solve${VEC}.c                                      
-  y_solve${VEC}.c                                      
+  exact_rhs.c
+  exact_solution.c
+  initialize.c
+  rhs.c
+  set_constants.c
+  solve_subs.c
+  verify.c
+  x_solve${VEC}.c
+  y_solve${VEC}.c
   z_solve${VEC}.c)
 
 add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
@@ -53,7 +55,7 @@ target_link_libraries(${BMK_PROJECT_NAME} m)
 # this property is required by our parasitic targets
 set_target_properties(${BMK_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 
-# this property is used internally by our harness 
+# this property is used internally by our harness
 # because benchmark names and their main targets have different names
 set_target_properties(${BMK_PROJECT_NAME} PROPERTIES BMK_NAME ${BMK_NAME})
 
