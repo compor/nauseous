@@ -57,9 +57,7 @@ attach_setparams_target(TARGET ${BMK_PROJECT_NAME} BMK_CLASS ${CLASS}
   UTILITY_TARGET ${SETPARAMS_UTILITY} UTILITY_EXE ${SETPARAMS_UTILITY})
 
 
-if(LLVM_IR_UTIL_FOUND)
-  foreach(FRAGMENT ${HARNESS_CMAKE_FRAGMENT_FILES})
-    include(${FRAGMENT})
-  endforeach()
-endif()
+foreach(FRAGMENT ${HARNESS_CMAKE_FRAGMENT_FILES})
+  include(${FRAGMENT})
+endforeach()
 

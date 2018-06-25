@@ -71,6 +71,8 @@ if(HARNESS_USE_LLVM)
   endif()
 endif()
 
+set(HARNESS_CMAKE_FRAGMENT_FILES "")
+
 if(LLVM_IR_UTIL_FOUND)
   list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/llvm-ir-cmake-pipelines/cmake/")
@@ -84,7 +86,7 @@ if(LLVM_IR_UTIL_FOUND)
 
   # check if there are any pipelines configured
   if(LLVMIR_PIPELINES_TO_INCLUDE)
-    set(HARNESS_CMAKE_FRAGMENT_FILES "${FRAGMENT_FILE}")
+    list(APPEND HARNESS_CMAKE_FRAGMENT_FILES "${FRAGMENT_FILE}")
   endif()
 endif()
 
