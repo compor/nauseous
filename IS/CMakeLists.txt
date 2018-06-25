@@ -52,7 +52,7 @@ endif()
 
 message(STATUS "${BMK_NAME} benchmark class: ${CLASS}")
 
-attach_setparams_target(TARGET ${BMK_PROJECT_NAME} BMK_CLASS ${CLASS}
+harness_attach_setparams_target(TARGET ${BMK_PROJECT_NAME} BMK_CLASS ${CLASS}
   UTILITY_TARGET ${SETPARAMS_UTILITY} UTILITY_EXE ${SETPARAMS_UTILITY})
 
 

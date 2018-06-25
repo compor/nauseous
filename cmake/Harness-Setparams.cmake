@@ -2,7 +2,7 @@
 
 include(CMakeParseArguments)
 
-function(attach_setparams_target)
+function(harness_attach_setparams_target)
   set(options)
   set(oneValueArgs TARGET BMK_CLASS UTILITY_TARGET UTILITY_EXE)
   set(multiValueArgs)
