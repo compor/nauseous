@@ -2,13 +2,23 @@
 
 include(CMakeParseArguments)
 
-function(add_prefix outvar prefix files)
-  set(tmplist "")
+function(harness_list_prepend)
+  set(options)
+  set(oneValueArgs OUTPUT_LIST PREFIX)
+  set(multiValueArgs INPUT_LIST)
 
-  foreach(f ${files})
-    list(APPEND tmplist "${prefix}${f}")
+  cmake_parse_arguments(HLP
+    "${options}"
+    "${oneValueArgs}"
+    "${multiValueArgs}"
+    ${ARGN})
+
+  set(TMPLIST "")
+
+  foreach(LISTITEM ${HLP_INPUT_LIST})
+    list(APPEND TMPLIST "${HLP_PREFIX}${LISTITEM}")
   endforeach()
 
-  set(${outvar} "${tmplist}" PARENT_SCOPE)
+  set(${HLP_OUTPUT_LIST} ${TMPLIST} PARENT_SCOPE)
 endfunction()
 

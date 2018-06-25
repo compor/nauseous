@@ -16,7 +16,10 @@ endif()
 set(SOURCES
   is.c)
 
-add_prefix(SOURCES "${HARNESS_BMK_SOURCE_SUBDIR}/" "${SOURCES}")
+harness_list_prepend(
+  OUTPUT_LIST SOURCES
+  INPUT_LIST "${SOURCES}"
+  PREFIX "${HARNESS_BMK_SOURCE_SUBDIR}/")
 
 list(APPEND SOURCES ${COMMON_SOURCES})
 
