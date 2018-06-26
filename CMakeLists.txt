@@ -90,6 +90,25 @@ if(LLVM_IR_UTIL_FOUND)
   endif()
 endif()
 
+if(CMAKE_PGO_FLAGS)
+  string(REPLACE " " ";" CMAKE_PGO_FLAGS ${CMAKE_PGO_FLAGS})
+
+  harness_detect_pgo(
+    FLAGS "${CMAKE_PGO_FLAGS}"
+    TYPE PGO_TYPE
+    MODE PGO_MODE
+    PROFILE_FILE PGO_FILE)
+
+  # TODO profile file needs to parsed
+  set(PGO_FILE "data.prof")
+
+  if(PGO_MODE STREQUAL "USE")
+    list(APPEND HARNESS_CMAKE_FRAGMENT_FILES
+      "SamplePGO")
+  endif()
+endif()
+
+
 #
 # project user options
 #
