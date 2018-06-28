@@ -103,8 +103,7 @@ if(CMAKE_PGO_FLAGS)
   set(PGO_FILE "data.prof")
 
   if(PGO_MODE STREQUAL "USE")
-    list(APPEND HARNESS_CMAKE_FRAGMENT_FILES
-      "SamplePGO")
+    list(INSERT HARNESS_CMAKE_FRAGMENT_FILES 0 "SamplePGO")
   endif()
 endif()
 
