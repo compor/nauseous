@@ -22,9 +22,9 @@ C_FLAGS="${C_FLAGS} -fno-unroll-loops"
 
 #
 
-PIPELINES="genbc;linkbc;loopunroll;binarybc"
+PIPELINES="genbc;linkbc;loopunroll;genobj;binarybc"
 COMPOUND_PIPELINES="group1"
-GROUP1_PIPELINE="genbc;linkbc;loopunroll;binarybc"
+GROUP1_PIPELINE="genbc;linkbc;loopunroll;genobj;binarybc"
 
 cmake \
   -GNinja \
