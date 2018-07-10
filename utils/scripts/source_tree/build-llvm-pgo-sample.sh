@@ -15,12 +15,15 @@ IS_BMK_CLASS="C"
 C_FLAGS=""
 C_FLAGS="${C_FLAGS} -g -Wall"
 C_FLAGS="${C_FLAGS} -O2 -mcmodel=medium"
+C_FLAGS="${C_FLAGS} -fsave-optimization-record"
 
 PGO_FLAGS=""
 PGO_FLAGS="${PGO_FLAGS} -fprofile-sample-use=data.prof"
 
 #LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 #LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
+
+#
 
 cmake \
   -GNinja \
@@ -41,3 +44,4 @@ cmake \
   -DMG_BMK_CLASS=${MG_BMK_CLASS} \
   -DIS_BMK_CLASS=${IS_BMK_CLASS} \
   "${SRC_DIR}"
+
