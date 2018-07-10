@@ -53,7 +53,7 @@ function(harness_detect_pgo)
     elseif("${HDP_FLAGS}" MATCHES "-fprofile-instr-use.*")
       set(${HDP_MODE} "USE" PARENT_SCOPE)
     else()
-      message(FATAL_ERROR "Uknown PGO mode.")
+      message(FATAL_ERROR "Unknown PGO mode.")
     endif()
   elseif("${HDP_FLAGS}" MATCHES "-fprofile-sample.*")
     set(${HDP_TYPE} "SAMPLE" PARENT_SCOPE)
@@ -61,12 +61,23 @@ function(harness_detect_pgo)
     if("${HDP_FLAGS}" MATCHES "-fprofile-sample-use.*")
       set(${HDP_MODE} "USE" PARENT_SCOPE)
     else()
-      message(FATAL_ERROR "Uknown PGO mode.")
+      message(FATAL_ERROR "Unknown PGO mode.")
     endif()
   else()
-    message(FATAL_ERROR "Uknown PGO type.")
+    message(FATAL_ERROR "Unknown PGO type.")
   endif()
 
-  # TODO profile file needs to parsed
+  # parse profile file
+
+  string(FIND ${HDP_FLAGS} "=" FILENAME_POS)
+
+  if(${FILENAME_POS} EQUAL -1)
+    message(FATAL_ERROR "PGO filename was not provided.")
+  endif()
+
+  math(EXPR FILENAME_POS "${FILENAME_POS}+1")
+
+  string(SUBSTRING ${HDP_FLAGS} ${FILENAME_POS} -1 PROF_FILENAME)
+  set(${HDP_PROFILE_FILE} ${PROF_FILENAME} PARENT_SCOPE)
 endfunction()
 

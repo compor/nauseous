@@ -99,9 +99,6 @@ if(CMAKE_PGO_FLAGS)
     MODE PGO_MODE
     PROFILE_FILE PGO_FILE)
 
-  # TODO profile file needs to parsed
-  set(PGO_FILE "data.prof")
-
   if(PGO_MODE STREQUAL "USE")
     list(INSERT HARNESS_CMAKE_FRAGMENT_FILES 0 "SamplePGO")
   endif()
