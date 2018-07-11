@@ -2,7 +2,7 @@
 
 include(CMakeParseArguments)
 
-function(SamplePGO)
+function(samplepgo)
   set(options)
   set(oneValueArgs TARGET INPUT_DIR PROFILE_FILE)
   set(multiValueArgs)
@@ -53,7 +53,7 @@ function(SamplePGO)
     -fprofile-sample-use=${SP_TARGET_PROFDATA})
 endfunction()
 
-SamplePGO(
+samplepgo(
   TARGET ${BMK_PROJECT_NAME}
   INPUT_DIR $ENV{HARNESS_PGO_INPUT_DIR}
   PROFILE_FILE ${PGO_FILE})
