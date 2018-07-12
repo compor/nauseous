@@ -2,7 +2,7 @@
 
 include(CMakeParseArguments)
 
-function(samplepgo)
+function(pgo)
   set(options)
   set(oneValueArgs TARGET TYPE INPUT_DIR PROFILE_FILE)
   set(multiValueArgs)
@@ -76,7 +76,7 @@ function(samplepgo)
   endif()
 endfunction()
 
-samplepgo(
+pgo(
   TARGET ${BMK_PROJECT_NAME}
   INPUT_DIR $ENV{HARNESS_PGO_INPUT_DIR}
   TYPE ${PGO_TYPE}
