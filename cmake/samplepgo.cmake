@@ -13,6 +13,22 @@ function(samplepgo)
     "${multiValueArgs}"
     ${ARGN})
 
+  if(NOT SP_TARGET)
+    message(FATAL_ERROR "Missing TARGET option.")
+  endif()
+
+  if(NOT SP_TYPE)
+    message(FATAL_ERROR "Missing TYPE option.")
+  endif()
+
+  if(NOT SP_INPUT_DIR)
+    message(FATAL_ERROR "Missing INPUT_DIR option.")
+  endif()
+
+  if(NOT SP_PROFILE_FILE)
+    message(FATAL_ERROR "Missing PROFILE_FILE option.")
+  endif()
+
   set(SP_CUSTOM_TARGET1 "${SP_TARGET}_pgo_profdata_copy")
   set(SP_CUSTOM_TARGET2 "${SP_TARGET}_pgo_profdata_rename")
 
