@@ -4,7 +4,7 @@ include(CMakeParseArguments)
 
 function(samplepgo)
   set(options)
-  set(oneValueArgs TARGET INPUT_DIR PROFILE_FILE)
+  set(oneValueArgs TARGET TYPE INPUT_DIR PROFILE_FILE)
   set(multiValueArgs)
 
   cmake_parse_arguments(SP
@@ -49,12 +49,20 @@ function(samplepgo)
   add_dependencies(${SP_TARGET} ${SP_CUSTOM_TARGET2})
   add_dependencies(${SP_CUSTOM_TARGET2} ${SP_CUSTOM_TARGET1})
 
-  target_compile_options(${SP_TARGET} PUBLIC
-    -fprofile-sample-use=${SP_TARGET_PROFDATA})
+  if(${SP_TYPE} STREQUAL "SAMPLE")
+    target_compile_options(${SP_TARGET} PUBLIC
+      -fprofile-sample-use=${SP_TARGET_PROFDATA})
+  elseif(${SP_TYPE} STREQUAL "INSTRUMENTATION")
+    target_compile_options(${SP_TARGET} PUBLIC
+      -fprofile-instr-use=${SP_TARGET_PROFDATA})
+  else()
+    message(FATAL_ERROR "Unknown profiling type: ${SP_TYPE}.")
+  endif()
 endfunction()
 
 samplepgo(
   TARGET ${BMK_PROJECT_NAME}
   INPUT_DIR $ENV{HARNESS_PGO_INPUT_DIR}
+  TYPE ${PGO_TYPE}
   PROFILE_FILE ${PGO_FILE})
 
