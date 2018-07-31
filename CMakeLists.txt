@@ -162,8 +162,12 @@ set(COMMON_RAND_SOURCES
 
 set(CMAKE_INSTALL_MESSAGE "LAZY")
 
-set(SETPARAMS_UTILITY "setparams")
-add_executable(${SETPARAMS_UTILITY} sys/setparams.c)
+if(NOT HARNESS_SETPARAMS_UTILITY)
+  set(SETPARAMS_UTILITY "setparams")
+  add_executable(${SETPARAMS_UTILITY} sys/setparams.c)
+else()
+  set(SETPARAMS_UTILITY "${HARNESS_SETPARAMS_UTILITY}")
+endif()
 
 file(STRINGS ${HARNESS_BMK_CONFIG_FILE} BENCHMARKS)
 
