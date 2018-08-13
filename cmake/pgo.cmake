@@ -53,14 +53,17 @@ function(pgo)
     message(FATAL_ERROR "${SP_SOURCE_PROFDATA} does not exist.")
   endif()
 
-  add_custom_target(${SP_CUSTOM_TARGET1}
+  add_custom_command(OUTPUT ${SP_BINARY_PROFDATA}
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${SP_SOURCE_PROFDATA} ${CMAKE_CURRENT_BINARY_DIR})
 
-  add_custom_target(${SP_CUSTOM_TARGET2}
+  add_custom_target(${SP_CUSTOM_TARGET1} DEPENDS ${SP_BINARY_PROFDATA})
+
+  add_custom_command(OUTPUT ${SP_TARGET_PROFDATA}
     COMMAND ${CMAKE_COMMAND} -E rename
-    ${SP_BINARY_PROFDATA}
-    ${SP_TARGET_PROFDATA})
+    ${SP_BINARY_PROFDATA} ${SP_TARGET_PROFDATA})
+
+  add_custom_target(${SP_CUSTOM_TARGET2} DEPENDS ${SP_TARGET_PROFDATA})
 
   add_dependencies(${SP_TARGET} ${SP_CUSTOM_TARGET2})
   add_dependencies(${SP_CUSTOM_TARGET2} ${SP_CUSTOM_TARGET1})
