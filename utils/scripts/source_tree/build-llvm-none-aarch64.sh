@@ -15,11 +15,16 @@ IS_BMK_CLASS="C"
 C_FLAGS=""
 C_FLAGS="${C_FLAGS} -g -Wall"
 C_FLAGS="${C_FLAGS} -O2 -mcmodel=large"
+C_FLAGS="${C_FLAGS} -fsave-optimization-record"
+C_FLAGS="${C_FLAGS} -fdiagnostics-show-hotness"
 C_FLAGS="${C_FLAGS} -nobuiltininc"
 C_FLAGS="${C_FLAGS} -isystem /usr/lib/gcc-cross/aarch64-linux-gnu/5.4.0/include/"
 C_FLAGS="${C_FLAGS} -isystem /usr/aarch64-linux-gnu/include/"
-C_FLAGS="${C_FLAGS} -mcpu=cortex-a53"
+C_FLAGS="${C_FLAGS} -mcpu=cortex-a73"
 C_FLAGS="${C_FLAGS} -mfpu=neon"
+
+PGO_FLAGS=""
+PGO_FLAGS="${PGO_FLAGS} -fprofile-sample-use=data.prof"
 
 #LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 #LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
@@ -28,7 +33,6 @@ C_FLAGS="${C_FLAGS} -mfpu=neon"
 
 cmake \
   -GNinja \
-  --debug-trycompile \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_POLICY_DEFAULT_CMP0056=NEW \
@@ -36,6 +40,7 @@ cmake \
   -DLLVM_DIR="$(llvm-config --prefix)/share/llvm/cmake/" \
   -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_C_FLAGS="${C_FLAGS}" \
+  -DCMAKE_PGO_FLAGS="${PGO_FLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="${LINKER_FLAGS}" \
   -DCMAKE_SHARED_LINKER_FLAGS="${LINKER_FLAGS}" \
   -DCMAKE_MODULE_LINKER_FLAGS="${LINKER_FLAGS}" \

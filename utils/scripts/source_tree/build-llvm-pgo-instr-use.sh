@@ -16,6 +16,7 @@ C_FLAGS=""
 C_FLAGS="${C_FLAGS} -g -Wall"
 C_FLAGS="${C_FLAGS} -O2 -mcmodel=medium"
 C_FLAGS="${C_FLAGS} -fsave-optimization-record"
+C_FLAGS="${C_FLAGS} -fdiagnostics-show-hotness"
 
 PGO_FLAGS=""
 PGO_FLAGS="${PGO_FLAGS} -fprofile-instr-use=data.prof"
