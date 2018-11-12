@@ -44,8 +44,8 @@ target_link_libraries(${BMK_PROJECT_NAME} m)
 set_target_properties(${BMK_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C)
 
 # this property is used internally by our harness
-# because benchmark names and their main targets have different names
-set_target_properties(${BMK_PROJECT_NAME} PROPERTIES BMK_NAME ${BMK_NAME})
+set_target_properties(${BMK_PROJECT_NAME} PROPERTIES
+  LLVMIR_SHORT_NAME ${BMK_PROJECT_NAME})
 
 #
 
