@@ -50,9 +50,6 @@ set(HARNESS_CONFIG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/config")
 
 # project options checks and processing
 
-configure_file("${CMAKE_SOURCE_DIR}/scripts/preamble/preamble.sh.in"
-  "preamble/preamble.sh" @ONLY)
-
 if(HARNESS_USE_LLVM)
   if("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" OR
       "${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang")
@@ -181,8 +178,6 @@ endforeach()
 
 install(DIRECTORY ${HARNESS_CONFIG_DIR} DESTINATION .)
 install(DIRECTORY ${HARNESS_INSTALL_TREE_SCRIPTS_DIR} DESTINATION scripts)
-install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/preamble/"
-  DESTINATION "preamble/")
 
 add_custom_target(install-build-scripts
   ALL
