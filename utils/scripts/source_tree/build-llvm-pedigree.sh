@@ -12,15 +12,17 @@ IS_BMK_CLASS="C"
 
 #
 
-C_FLAGS="-g -Wall -O2 -mcmodel=medium"
+C_FLAGS="-Wall"
+C_FLAGS="${C_FLAGS} -g -gline-tables-only"
+C_FLAGS="${C_FLAGS} -O2 -mcmodel=medium"
 #LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 #LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
 
 #
 
-PIPELINES="genbc;linkbc;loopc14n;pedigree;binarybc"
+PIPELINES="genbc;linkbc;loopc14n;aa1;pedigree;binarybc"
 COMPOUND_PIPELINES="group1"
-GROUP1_PIPELINE="genbc;linkbc;loopc14n;pedigree;binarybc"
+GROUP1_PIPELINE="genbc;linkbc;loopc14n;aa1;pedigree;binarybc"
 
 cmake \
   -GNinja \

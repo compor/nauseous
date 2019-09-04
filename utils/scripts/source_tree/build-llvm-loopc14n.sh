@@ -12,7 +12,14 @@ IS_BMK_CLASS="C"
 
 #
 
-C_FLAGS="-g -Wall -O2 -mcmodel=medium"
+C_FLAGS=""
+C_FLAGS="${C_FLAGS} -Wall"
+C_FLAGS="${C_FLAGS} -g -gline-tables-only"
+C_FLAGS="${C_FLAGS} -O1 -Xclang -disable-llvm-passes"
+C_FLAGS="${C_FLAGS} -mcmodel=medium"
+C_FLAGS="${C_FLAGS} -fno-unroll-loops -fno-vectorize -fno-slp-vectorize"
+C_FLAGS="${C_FLAGS} -fsave-optimization-record"
+
 #LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
 #LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
 
