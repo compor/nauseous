@@ -23,8 +23,8 @@ C_FLAGS="${C_FLAGS} -fno-unroll-loops -fno-vectorize -fno-slp-vectorize"
 C_FLAGS="${C_FLAGS} -fsave-optimization-record"
 #C_FLAGS="${C_FLAGS} -fdiagnostics-show-hotness"
 
-#LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
-#LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi" 
+LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
+LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
 
 #
 
@@ -32,9 +32,11 @@ PIPELINES="genbc;linkbc;loopc14n;pollyalt2;binarybc"
 COMPOUND_PIPELINES="group1"
 GROUP1_PIPELINE="genbc;linkbc;loopc14n;pollyalt2;binarybc"
 
-CC=clang CXX=clang++ \
-  cmake \
+
+cmake \
   -GNinja \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_POLICY_DEFAULT_CMP0056=NEW \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=On \
   -DLLVM_DIR=$(llvm-config --prefix)/share/llvm/cmake/ \
