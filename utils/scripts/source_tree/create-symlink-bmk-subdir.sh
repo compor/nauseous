@@ -124,6 +124,15 @@ echo ""
 
 readarray BENCHMARKS < "${BMK_CONFIG_FILE}"
 
+if [ "$BMK_RM_LINKS" -eq 0 ]; then
+  # mode: create symlinks, if targets exist
+
+  if [[ ${BMK_SUBDIR} -eq "src" ]]; then
+    ln -sf ${BMK_SOURCE_DIR}/sys ${BMK_TARGET_DIR}/sys
+    ln -sf ${BMK_SOURCE_DIR}/common ${BMK_TARGET_DIR}/common
+  fi
+fi
+
 for BMK in "${BENCHMARKS[@]}"; do
   # trim whitespace
   BMK=$(echo "$BMK" | xargs)
@@ -131,11 +140,6 @@ for BMK in "${BENCHMARKS[@]}"; do
   # 2 modes of operation
   if [ "$BMK_RM_LINKS" -eq 0 ]; then
     # mode: create symlinks, if targets exist
-
-    if [[ ${BMK_SUBDIR} -eq "src" ]]; then
-      ln -sf ${BMK_SOURCE_DIR}/sys ${BMK_TARGET_DIR}/sys
-      ln -sf ${BMK_SOURCE_DIR}/common ${BMK_TARGET_DIR}/sys
-    fi
 
     for BMK_SUBDIR in "${BMK_SUBDIRS[@]}"; do
       # trim whitespace
