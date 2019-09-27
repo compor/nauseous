@@ -6,7 +6,6 @@ INSTALL_PREFIX=${2:-../install/}
 
 BMK_CONFIG_FILE="${SRC_DIR}/config/suite_all.txt"
 BMK_CLASS="B"
-#DC_BMK_CLASS="A"
 MG_BMK_CLASS="C"
 IS_BMK_CLASS="C"
 
@@ -17,15 +16,7 @@ C_FLAGS="${C_FLAGS} -Wall"
 C_FLAGS="${C_FLAGS} -g"
 C_FLAGS="${C_FLAGS} -O2"
 C_FLAGS="${C_FLAGS} -mcmodel=medium"
-#C_FLAGS="${C_FLAGS} -fno-unroll-loops"
-#C_FLAGS="${C_FLAGS} -fno-vectorize"
-#C_FLAGS="${C_FLAGS} -fno-slp-vectorize"
-#C_FLAGS="${C_FLAGS} -fsave-optimization-record"
-#C_FLAGS="${C_FLAGS} -fdiagnostics-show-hotness"
 C_FLAGS="${C_FLAGS} -pg"
-
-#LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
-#LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
 
 #
 
@@ -47,6 +38,3 @@ cmake \
   -DIS_BMK_CLASS=${IS_BMK_CLASS} \
   "${SRC_DIR}"
 
-
-  #-DLLVM_DIR=$(llvm-config --prefix)/share/llvm/cmake/ \
-  #-DDC_BMK_CLASS=${DC_BMK_CLASS} \
