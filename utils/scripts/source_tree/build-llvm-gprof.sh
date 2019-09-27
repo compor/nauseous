@@ -13,13 +13,17 @@ IS_BMK_CLASS="C"
 #
 
 C_FLAGS=""
-C_FLAGS="${C_FLAGS} -g -Wall"
-C_FLAGS="${C_FLAGS} -O2 -mcmodel=medium"
+C_FLAGS="${C_FLAGS} -Wall"
+C_FLAGS="${C_FLAGS} -g -gline-tables-only"
+C_FLAGS="${C_FLAGS} -O2"
+C_FLAGS="${C_FLAGS} -mcmodel=medium"
+C_FLAGS="${C_FLAGS} -fno-unroll-loops -fno-vectorize -fno-slp-vectorize"
 C_FLAGS="${C_FLAGS} -fsave-optimization-record"
-C_FLAGS="${C_FLAGS} -pg"
+#C_FLAGS="${C_FLAGS} -fdiagnostics-show-hotness"
+#C_FLAGS="${C_FLAGS} -pg"
 
-#LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
-#LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
+LINKER_FLAGS="-Wl,-L$(llvm-config --libdir) -Wl,-rpath=$(llvm-config --libdir)"
+LINKER_FLAGS="${LINKER_FLAGS} -lc++ -lc++abi"
 
 #
 
@@ -29,6 +33,7 @@ cmake \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_POLICY_DEFAULT_CMP0056=NEW \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=On \
+  -DLLVM_DIR=$(llvm-config --prefix)/share/llvm/cmake/ \
   -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_C_FLAGS="${C_FLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="${LINKER_FLAGS}" \
