@@ -143,6 +143,7 @@ set(COMMON_SOURCES
   ${CMAKE_SOURCE_DIR}/common/c_print_results.c
   ${CMAKE_SOURCE_DIR}/common/c_timers.c
   ${CMAKE_SOURCE_DIR}/common/print_results.c
+  ${CMAKE_SOURCE_DIR}/common/adt_citerator.c
   ${CMAKE_SOURCE_DIR}/common/${BMK_WTIME}.c)
 
 set(COMMON_RAND_SOURCES
