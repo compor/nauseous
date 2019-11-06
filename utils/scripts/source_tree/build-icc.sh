@@ -23,7 +23,7 @@ ICC_FLAGS="${ICC_FLAGS} -par-threshold0"
 ICC_FLAGS="${ICC_FLAGS} -qopt-report=5"
 #ICC_FLAGS="${ICC_FLAGS} -qopt-report-phase=par"
 ICC_FLAGS="${ICC_FLAGS} -qopt-report-phase=par,loop"
-ICC_FLAGS="${ICC_FLAGS} -qopt-report-file=report.txt"
+ICC_FLAGS="${ICC_FLAGS} -qopt-report-file=par-loop-report.txt"
 
 C_FLAGS="${CMAKE_C_FLAGS} ${ICC_FLAGS}"
 #C_FLAGS="-g -Wall -O3"
